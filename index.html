@@ -952,6 +952,7 @@
     .team-header { flex-direction: column; align-items: flex-start; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -1289,56 +1290,45 @@
     </div>
   </div>
 
- <form action="https://formsubmit.co/iagomode@gmail.com" method="POST">
-
-<input type="hidden" name="_subject" value="Novo contato do site">
-<input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_next" value="https://iagobzm.github.io/modeadvogados/">
-<div class="form-row">
-    <div class="form-group">
+  <div class="contact-form reveal" id="form-section">
+    <div class="form-row">
+      <div class="form-group">
         <label>Nome Completo</label>
-        <input type="text" name="nome" placeholder="Seu nome" required>
-    </div>
-
-    <div class="form-group">
+        <input type="text" id="formNome" placeholder="Seu nome">
+      </div>
+      <div class="form-group">
         <label>Empresa</label>
-        <input type="text" name="empresa" placeholder="Nome da empresa">
+        <input type="text" id="formEmpresa" placeholder="Nome da empresa">
+      </div>
     </div>
-</div>
-
-<div class="form-row">
-    <div class="form-group">
+    <div class="form-row">
+      <div class="form-group">
         <label>E-mail</label>
-        <input type="email" name="email" placeholder="Digite seu email" required>
-    </div>
-
-    <div class="form-group">
+        <input type="email" id="formEmail" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
         <label>Telefone</label>
-        <input type="tel" name="telefone" placeholder="(00) 00000-0000">
+        <input type="tel" id="formTelefone" placeholder="(00) 00000-0000">
+      </div>
     </div>
-</div>
-
-<div class="form-group">
-    <label>Área de Interesse</label>
-    <select name="area">
+    <div class="form-group">
+      <label>Área de Interesse</label>
+      <select id="formArea">
+        <option value="" disabled selected>Selecione uma área</option>
         <option>Direito Tributário</option>
         <option>Direito Empresarial</option>
         <option>Licitações Públicas</option>
         <option>Direito Civil</option>
         <option>Outra área</option>
-    </select>
-</div>
-
-<div class="form-group">
-    <label>Descreva brevemente seu caso</label>
-    <textarea name="caso"></textarea>
-</div>
-
-<button type="submit" class="form-submit">
-    Enviar Mensagem →
-</button>
-
-</form>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Descreva brevemente seu caso</label>
+      <textarea id="formMensagem" placeholder="Conte-nos sobre sua necessidade jurídica..."></textarea>
+    </div>
+    <button class="form-submit" onclick="handleSubmit(event)">Enviar Mensagem →</button>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
@@ -1404,18 +1394,109 @@ carousel.addEventListener('scroll', () => {
   updateUI();
 });
  
-  // Form submit
+  // ============================================================
+  // ENVIO DO FORMULÁRIO via EmailJS
+  // ------------------------------------------------------------
+  // 1. Crie uma conta gratuita em https://www.emailjs.com
+  // 2. Adicione um "Email Service" (ex: Gmail) conectado a
+  //    contato.modeadv@gmail.com
+  // 3. Crie um "Email Template" com variáveis:
+  //    {{from_name}} {{from_company}} {{from_email}}
+  //    {{from_phone}} {{area}} {{message}}
+  // 4. Substitua as constantes abaixo pelos valores do seu painel
+  // ============================================================
+  const EMAILJS_PUBLIC_KEY  = 'xzsjnq1JbFqb2oV9x';
+  const EMAILJS_SERVICE_ID  = 'service_8j9nw99';
+  const EMAILJS_TEMPLATE_ID = 'template_u6ds7cn';
+  const DESTINATARIO        = 'contato.modeadv@gmail.com';
+
+  if (window.emailjs) {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
+
+    const nome     = document.getElementById('formNome').value.trim();
+    const empresa  = document.getElementById('formEmpresa').value.trim();
+    const email    = document.getElementById('formEmail').value.trim();
+    const telefone = document.getElementById('formTelefone').value.trim();
+    const area     = document.getElementById('formArea').value.trim();
+    const mensagem = document.getElementById('formMensagem').value.trim();
+
+    if (!nome || !email || !mensagem) {
+      alert('Por favor, preencha ao menos Nome, E-mail e a descrição do seu caso.');
+      return;
+    }
+
     const btn = e.target;
-    btn.textContent = 'Mensagem enviada! ✓';
-    btn.style.background = '#4a7c59';
-    btn.style.color = '#fff';
-    setTimeout(() => {
-      btn.textContent = 'Enviar Mensagem →';
-      btn.style.background = '';
-      btn.style.color = '';
-    }, 3000);
+    const originalText = btn.textContent;
+
+    const params = {
+      to_email: DESTINATARIO,
+      from_name: nome,
+      from_company: empresa || '-',
+      from_email: email,
+      from_phone: telefone || '-',
+      area: area || '-',
+      message: mensagem
+    };
+
+    function showSuccess() {
+      btn.textContent = 'Mensagem enviada! ✓';
+      btn.style.background = '#4a7c59';
+      btn.style.color = '#fff';
+      document.getElementById('formNome').value = '';
+      document.getElementById('formEmpresa').value = '';
+      document.getElementById('formEmail').value = '';
+      document.getElementById('formTelefone').value = '';
+      document.getElementById('formArea').value = '';
+      document.getElementById('formMensagem').value = '';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 4000);
+    }
+
+    function fallbackMailto() {
+      const assunto = `Contato via site — ${area || 'Assunto não informado'} — ${nome}`;
+      const corpo =
+`Nome: ${nome}
+Empresa: ${empresa || '-'}
+E-mail: ${email}
+Telefone: ${telefone || '-'}
+Área de Interesse: ${area || '-'}
+
+Mensagem:
+${mensagem}`;
+      window.location.href = `mailto:${DESTINATARIO}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+    }
+
+    // Se o EmailJS estiver configurado, envia direto pelo servidor
+    if (window.emailjs && EMAILJS_SERVICE_ID !== 'SUA_SERVICE_ID' && EMAILJS_TEMPLATE_ID !== 'SEU_TEMPLATE_ID') {
+      btn.textContent = 'Enviando...';
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+        .then(() => {
+          showSuccess();
+        })
+        .catch((err) => {
+          console.error('Erro ao enviar via EmailJS:', err);
+          fallbackMailto();
+          setTimeout(() => { btn.textContent = originalText; }, 1000);
+        });
+    } else {
+      // EmailJS não configurado: usa o cliente de e-mail do usuário
+      fallbackMailto();
+      btn.textContent = 'Abrindo seu e-mail... ✓';
+      btn.style.background = '#4a7c59';
+      btn.style.color = '#fff';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 3000);
+    }
   }
 
   // Smooth nav
