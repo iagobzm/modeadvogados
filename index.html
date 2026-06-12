@@ -1289,45 +1289,56 @@
     </div>
   </div>
 
-  <div class="contact-form reveal" id="form-section">
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nome Completo</label>
-        <input type="text" placeholder="Seu nome">
-      </div>
-      <div class="form-group">
-        <label>Empresa</label>
-        <input type="text" placeholder="Nome da empresa">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" placeholder="seu@email.com">
-      </div>
-      <div class="form-group">
-        <label>Telefone</label>
-        <input type="tel" placeholder="(00) 00000-0000">
-      </div>
-    </div>
+ <form action="https://formsubmit.co/iagomode@gmail.com" method="POST">
+
+<input type="hidden" name="_subject" value="Novo contato do site">
+<input type="hidden" name="_captcha" value="false">
+
+<div class="form-row">
     <div class="form-group">
-      <label>Área de Interesse</label>
-      <select>
-        <option value="" disabled selected>Selecione uma área</option>
+        <label>Nome Completo</label>
+        <input type="text" name="nome" placeholder="Seu nome" required>
+    </div>
+
+    <div class="form-group">
+        <label>Empresa</label>
+        <input type="text" name="empresa" placeholder="Nome da empresa">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" name="email" placeholder="Digite seu email" required>
+    </div>
+
+    <div class="form-group">
+        <label>Telefone</label>
+        <input type="tel" name="telefone" placeholder="(00) 00000-0000">
+    </div>
+</div>
+
+<div class="form-group">
+    <label>Área de Interesse</label>
+    <select name="area">
         <option>Direito Tributário</option>
         <option>Direito Empresarial</option>
         <option>Licitações Públicas</option>
         <option>Direito Civil</option>
         <option>Outra área</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Descreva brevemente seu caso</label>
-      <textarea placeholder="Conte-nos sobre sua necessidade jurídica..."></textarea>
-    </div>
-    <button class="form-submit" onclick="handleSubmit(event)">Enviar Mensagem →</button>
-  </div>
-</section>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Descreva brevemente seu caso</label>
+    <textarea name="caso"></textarea>
+</div>
+
+<button type="submit" class="form-submit">
+    Enviar Mensagem →
+</button>
+
+</form>
 
 <!-- FOOTER -->
 <footer>
