@@ -1021,14 +1021,16 @@
 
   @media (max-width: 900px) {
     .about { grid-template-columns: 1fr; gap: 3rem; }
-    .about-visual { margin-bottom: 1.5rem; }
-    .about-img-wrap { aspect-ratio: 4/3; }
-    .about-badge {
-      position: static;
-      width: auto;
-      margin-top: 1rem;
-      display: inline-block;
+    .about-visual {
+      max-width: 420px;
+      margin: 0 auto 1.5rem;
     }
+    .about-img-wrap { aspect-ratio: 4/5; }
+    .about-badge {
+      padding: 1.2rem;
+      width: 110px;
+    }
+    .about-badge-num { font-size: 2.2rem; }
     .areas-header, .contact { grid-template-columns: 1fr; gap: 2rem; }
     .areas-grid { grid-template-columns: 1fr; }
     .diff-grid { grid-template-columns: 1fr; }
